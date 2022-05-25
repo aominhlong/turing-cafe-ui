@@ -1,6 +1,16 @@
 context('Homepage', () => {
     beforeEach(() => {
         cy.visit("http://localhost:3000/")
+        cy.intercept('POST', 'http://localhost:3001/api/v1/reservations', {
+            statusCode: 201,
+            body: {
+                id: 2,
+                name: 'Nick',
+                date: '1/02',
+                time: '2:30',
+                number: 2
+            }
+        })
     })
   
     it('should have a title', () => {
@@ -39,4 +49,14 @@ context('Homepage', () => {
 
         cy.get('.allRes > :nth-child(10)').should('exist')
     })
+
+    it.only('should post the new reservation', () => {
+        cy.get('[placeholder="Name"]').type("Nick")
+        .get('[placeholder="Date(mm/dd)"]').type("1/02")
+        .get('[placeholder="Time"]').type("2:30")
+        .get('[placeholder="Number of guests"]').type("2")
+        .get('.resy-container > :nth-child(1) > button').click()
+    })
+
+
 })
